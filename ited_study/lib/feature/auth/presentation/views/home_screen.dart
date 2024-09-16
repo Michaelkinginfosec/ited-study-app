@@ -19,8 +19,8 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 80,
-                      height: 80,
+                      width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(

@@ -33,7 +33,7 @@ class NavScreen extends ConsumerWidget {
           height: 50,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Color.fromRGBO(181, 178, 178, 1),
+            color: Color.fromRGBO(217, 217, 217, 1),
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -48,17 +48,17 @@ class NavScreen extends ConsumerWidget {
                 CustomNavigationItem(
                   index: 1,
                   currentIndex: currentIndex,
-                  icon: "assets/images/track.png",
+                  icon: "assets/images/b_ooks.png",
                 ),
                 CustomNavigationItem(
                   index: 2,
                   currentIndex: currentIndex,
-                  icon: "assets/images/lkasd.png",
+                  icon: "assets/images/dyna.png",
                 ),
                 CustomNavigationItem(
                   index: 3,
                   currentIndex: currentIndex,
-                  icon: "assets/images/profile.png",
+                  icon: "assets/images/setting.png",
                 ),
               ],
             ),

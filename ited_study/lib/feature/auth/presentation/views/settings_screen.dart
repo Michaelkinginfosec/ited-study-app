@@ -132,7 +132,9 @@ class SetttingsScreen extends StatelessWidget {
                   children: [
                     CustomSizeBox.mediumBox,
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        context.push(AppRoutes.editprofile);
+                      },
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(
