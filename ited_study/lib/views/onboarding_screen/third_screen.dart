@@ -12,10 +12,10 @@ class ThirdScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset("assets/images/first_screen.png"),
+          Image.asset("assets/images/third_screen.png"),
           SizedBox(height: 30),
           Text(
-            "Welcome to ITed!",
+            "Congrats!!",
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -25,7 +25,7 @@ class ThirdScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              "Unlock your potential— ",
+              "Sit back, relax, and get ready to learn. You are just moments away from setting up your personalized course.",
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,

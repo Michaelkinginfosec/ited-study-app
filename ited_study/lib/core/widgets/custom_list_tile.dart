@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 class CustomListTile extends StatelessWidget {
   final Widget subTitle;
   final Widget title;
-  final Widget icon;
 
   const CustomListTile({
     super.key,
     required this.subTitle,
     required this.title,
-    required this.icon,
   });
 
   @override
@@ -20,7 +18,6 @@ class CustomListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
-        trailing: icon,
         title: title,
         subtitle: subTitle,
       ),

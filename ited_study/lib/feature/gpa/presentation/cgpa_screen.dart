@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:ited_study/core/route/route.dart';
 import 'package:ited_study/feature/gpa/presentation/calculate_cgpa_screen.dart';
 
 class CGPAScreen extends StatelessWidget {
@@ -134,12 +136,7 @@ class CGPAScreen extends StatelessWidget {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          CalculateCGPAScreen(),
-                                    ),
-                                  );
+                                  context.push(AppRoutes.calculatecgpa);
                                 },
                                 child: Container(
                                   width: 71,

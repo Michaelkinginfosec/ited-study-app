@@ -12,7 +12,7 @@ class SecondScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset("assets/images/first_screen.png"),
+          Image.asset("assets/images/second_screen.png"),
           SizedBox(height: 30),
           Text(
             "Welcome to ITed!",
@@ -25,7 +25,7 @@ class SecondScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              "Unlock your potential— ",
+              "Welcome to your gateway of knowledge—",
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class SecondScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              "every lesson is a step closer to your dreams!",
+              "let's make every moment count!" ",",
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
