@@ -21,6 +21,7 @@ import { LoginDTO } from "./dtos/login.dto";
 import { UserRefreshToken } from "./schema/user-refresh-token.schema";
 import { access } from "fs";
 import { resendVerificationDTO } from "./dtos/verification.dto";
+import { AccessToken } from "./schema/access-token.schema";
 
 
 
@@ -32,6 +33,7 @@ export class UserService {
         @InjectModel(UserResetToken.name) private userResetTokenModel: Model<UserResetToken>,
         @InjectModel(UserRefreshToken.name) private userRefreshTokenModel: Model<UserRefreshToken>,
         @InjectModel(SendVerificationCode.name) private SendVerificationCodeModel: Model<SendVerificationCode>,
+        @InjectModel(AccessToken.name) private accessTokenModel: Model<AccessToken>,
         private readonly sendOtpService: SendOTPService,
         private readonly emailService: EmailService,
         private readonly jwtService: JwtService
@@ -253,12 +255,13 @@ export class UserService {
             if (!passwordMatch) {
                 throw new UnauthorizedException("Invalid Credentials");
             }
+            const userId = user._id
 
             const verified = user.verified;
             if (verified === true) {
                 const { accessToken } = await this.generateUsersToken(user._id);
                 if (accessToken) {
-                    return { message: "login successful", accessToken }
+                    return { message: "login successful", accessToken, userId };
                 }
 
 
@@ -279,11 +282,20 @@ export class UserService {
     }
 
 
+
+
     async storeRefreshToken(token: string, userId) {
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + 100);
         await this.userRefreshTokenModel.updateOne({ userId }, { $set: { expiryDate, token } }, { upsert: true });
     }
+    async storeAccessToken(accessToken: string, userId) {
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 100);
+        await this.accessTokenModel.updateOne({ userId }, { $set: { expiryDate, accessToken } }, { upsert: true });
+    }
+
+
 
     //Generate user token
     async generateUsersToken(userId) {
@@ -291,6 +303,8 @@ export class UserService {
         const accessToken = this.jwtService.sign(payload, { expiresIn: '40H' });
         const refreshToken = nanoid(64);
         await this.storeRefreshToken(refreshToken, userId);
+        await this.storeAccessToken(accessToken, userId);
+
         return { accessToken }
     }
 
@@ -306,20 +320,46 @@ export class UserService {
         return this.generateUsersToken(token.userId);
     }
 
-    //getuser 
-    async getUser(userId: string) {
+    // //getuser 
+    // async getUser(userId: string) {
+    //     try {
+    //         if (!Types.ObjectId.isValid(userId)) {
+    //             throw new BadRequestException('User not found!');
+    //         }
+    //         const user = await this.userModel.findById(userId);
+    //         if (!user) {
+    //             throw new NotFoundException('User not found!');
+    //         }
+    //         return user;
+    //     } catch (error) {
+    //         if (error.name === 'CastError') {
+    //             throw new BadRequestException('Invalid User ID format!');
+    //         }
+
+    //         if (error instanceof BadRequestException) {
+    //             throw new BadRequestException(error.message);
+    //         }
+    //         throw error;
+    //     }
+
+    // }
+
+    async getUserAccessToken(userId: string) {
         try {
             if (!Types.ObjectId.isValid(userId)) {
                 throw new BadRequestException('User not found!');
+
             }
-            const user = await this.userModel.findById(userId);
+            const user = await this.accessTokenModel.findOne({ userId: new Types.ObjectId(userId) });
             if (!user) {
-                throw new NotFoundException('User not found!');
+                throw new NotFoundException('User not found!!!');
             }
             return user;
         } catch (error) {
             if (error.name === 'CastError') {
+                console.log(error)
                 throw new BadRequestException('Invalid User ID format!');
+
             }
 
             if (error instanceof BadRequestException) {
@@ -330,5 +370,20 @@ export class UserService {
 
     }
 
-}
+    async logOut(userId: string) {
+        const accessToken = await this.accessTokenModel.findOne({ expiryDate: { $gte: new Date() }, userId: new Types.ObjectId(userId) });
 
+        if (accessToken) {
+            await this.deleteAccessToken(userId);
+            return { message: 'Logged out successfully' };
+        } else {
+            return { message: 'No active sessions found' };
+        }
+
+
+
+    }
+    async deleteAccessToken(userId: string) {
+        return await this.accessTokenModel.deleteMany({ userId: new Types.ObjectId(userId) });
+    }
+}

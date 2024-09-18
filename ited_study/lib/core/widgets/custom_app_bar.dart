@@ -25,7 +25,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: Theme.of(context).platform == TargetPlatform.iOS
+                    ? const Icon(Icons.arrow_back_ios)
+                    : const Icon(Icons.arrow_back),
                 onPressed:
                     onBackButtonPressed ?? () => Navigator.of(context).pop(),
                 tooltip: 'Back',

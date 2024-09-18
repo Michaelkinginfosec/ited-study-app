@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:ited_study/feature/admin/presentation/views/admin_login_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/change_password_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/edit_profile_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/forgot_password_screen.dart';
@@ -14,235 +17,102 @@ import 'package:ited_study/feature/auth/presentation/views/about_us.dart';
 import 'package:ited_study/feature/auth/presentation/views/nav_screen.dart';
 import 'package:ited_study/views/onboarding_screen/onboarding_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/settings_screen.dart';
+import 'package:ited_study/views/responsive/responsive.dart';
 
 import '../../feature/auth/presentation/views/activate_app_screen.dart';
 import '../../feature/auth/presentation/views/scholarship_screen.dart';
+import '../../feature/notes/presentation/views/course_screen.dart';
 import 'route.dart';
 
-final GoRouter router = GoRouter(
-  initialLocation: '/navscreen',
+final box = Hive.box('sessionBox');
+final isLoggedIn = box.get("isLoggedIn", defaultValue: false);
+
+final router = GoRouter(
+  initialLocation: isLoggedIn ? AppRoutes.navscreen : AppRoutes.responsive,
   routes: [
     GoRoute(
+      name: "/responsive",
+      path: AppRoutes.responsive,
+      builder: (context, state) => Responsive(
+        mobileAndIpad: OnboardingScreen(),
+        desktop: AdminLoginScreen(),
+      ),
+    ),
+    GoRoute(
+      name: "/onboarding",
       path: AppRoutes.onboarding,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: OnboardingScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => OnboardingScreen(),
     ),
     GoRoute(
-      path: AppRoutes.navscreen,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: NavScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+        name: '/navscreen',
+        path: AppRoutes.navscreen,
+        builder: (context, state) => NavScreen()),
+    GoRoute(
+        name: '/aboutus',
+        path: AppRoutes.aboutus,
+        builder: (context, state) => AboutUs()),
+    GoRoute(
+      name: '/settings',
+      path: AppRoutes.settings,
+      builder: (context, state) => SetttingsScreen(),
     ),
     GoRoute(
-      path: AppRoutes.aboutus,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: AboutUs(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
-    ),
-    GoRoute(
-      path: AppRoutes.profile,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: SetttingsScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
-    ),
-    GoRoute(
+      name: '/login',
       path: AppRoutes.login,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: LoginScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
+      name: '/activate',
       path: AppRoutes.activate,
-      pageBuilder: (context, state) => CustomTransitionPage(
-          child: ActivateAppScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            );
-          }),
+      builder: (context, state) => ActivateAppScreen(),
     ),
     GoRoute(
+      name: '/signup',
       path: AppRoutes.signUp,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: SignUpScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => SignUpScreen(),
     ),
     GoRoute(
+      name: '/forgotpassword',
       path: AppRoutes.forgotpassword,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: ForgotPasswordScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => ForgotPasswordScreen(),
     ),
     GoRoute(
+      name: '/cgpa',
       path: AppRoutes.cgpascreen,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: CGPAScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => CGPAScreen(),
     ),
     GoRoute(
+      name: '/verification',
       path: AppRoutes.verification,
-      pageBuilder: (context, state) {
+      builder: (context, state) {
         final email = state.extra as String? ?? '';
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: VerificationScreen(email: email),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(1, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            );
-          },
-        );
+        return VerificationScreen(email: email);
       },
     ),
     GoRoute(
+      name: '/calculatecgpa',
       path: AppRoutes.calculatecgpa,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: CalculateCGPAScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => CalculateCGPAScreen(),
     ),
     GoRoute(
+      name: 'scholarship',
       path: AppRoutes.scholarship,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: ScholarshipScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => ScholarshipScreen(),
     ),
     GoRoute(
+      name: 'editprofile',
       path: AppRoutes.editprofile,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: EditProfileScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => EditProfileScreen(),
     ),
     GoRoute(
+      name: 'changepassword',
       path: AppRoutes.changepassword,
-      pageBuilder: (context, state) => CustomTransitionPage(
-        key: state.pageKey,
-        child: ChangePasswordScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-      ),
+      builder: (context, state) => ChangePasswordScreen(),
     ),
+    GoRoute(
+      name: '/course',
+      path: AppRoutes.course,
+      builder: (context, state) => CourseScreen(),
+    )
   ],
 );

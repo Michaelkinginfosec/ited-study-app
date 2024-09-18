@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ited_study/feature/auth/data/models/users.dart';
 import 'package:ited_study/feature/auth/domain/entities/user_entity.dart';
@@ -10,10 +11,13 @@ abstract class UsersRemoteDataSource {
   Future<String> verifyOTP(String otp);
   Future<String> login(String email, String password);
   Future<void> storeToken(String token);
-  Future<void> logout();
+  Future<void> storeUserId(String userId);
+  Future<String> logOut();
+  Future<void> clearUser();
   Future<Users> getUser(String userId);
   Future<void> storeUser(Users user);
   Future<String> resendVerificationCode(String email);
+  // Future<bool> isLoggedIn();
 }
 
 class UserRemoteDatasourceImp implements UsersRemoteDataSource {
@@ -28,12 +32,26 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
         '/users/create-account',
         data: user.toEntity().toJson(),
       );
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (response.data != null && response.data is Map<String, dynamic>) {
           final responseData = response.data as Map<String, dynamic>;
-          final message =
-              responseData['message'] as String? ?? 'No message available';
-          return message;
+
+          // Handle the 'message' field dynamically based on its type
+          dynamic message = responseData['message'];
+
+          // Check if the message is a String
+          if (message is String) {
+            return message;
+          }
+          // Check if the message is a List
+          else if (message is List) {
+            return message.join(', '); // Convert the list into a single string
+          }
+          // If the message is neither a String nor a List
+          else {
+            throw SignUpException('Unexpected message format');
+          }
         } else {
           throw SignUpException('Unexpected response format');
         }
@@ -46,9 +64,18 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
         if (dioError.response!.statusCode == 409) {
           throw SignUpException('Email already exists');
         } else {
-          throw SignUpException(
-            dioError.response!.data['message'] as String? ?? 'Sign up failed',
-          );
+          // Handle the 'message' field dynamically in error responses
+          dynamic message = dioError.response!.data['message'];
+
+          if (message is String) {
+            throw SignUpException(message);
+          } else if (message is List) {
+            throw SignUpException(
+                message.join(', ')); // Join the list into a single string
+          } else {
+            throw SignUpException(
+                'Sign up failed with an unexpected message format');
+          }
         }
       } else {
         throw SignUpException('Network or server error');
@@ -109,10 +136,16 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
           final responseData = response.data as Map<String, dynamic>;
           final message =
               responseData['message'] as String? ?? 'No message available';
+          final userId = responseData['userId'] as String?;
+          if (userId != null) {
+            await storeUserId(userId);
+          }
           final token = responseData['accessToken'] as String?;
+
           if (token != null) {
             await storeToken(token);
           }
+
           return message;
         } else {
           throw LoginException('Unexpected response format');
@@ -144,6 +177,12 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
 
   @override
   Future<Users> getUser(String userId) async {
+    final box = Hive.box("sessionBox");
+    final userId = box.get("userIdKey");
+    if (userId == null) {
+      throw Exception('User not found');
+    }
+
     try {
       final response = await dio.get('/users/$userId');
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -159,7 +198,6 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
       }
     } on DioException catch (dioError) {
       if (dioError.response != null) {
-        // Handle specific error scenarios based on status codes
         if (dioError.response!.statusCode == 404 ||
             dioError.response!.statusCode == 400) {
           throw Exception('User not found');
@@ -219,11 +257,62 @@ class UserRemoteDatasourceImp implements UsersRemoteDataSource {
   Future<void> storeToken(String token) async {
     var box = Hive.box("sessionBox");
     await box.put("accessToken", token);
+    await box.put("isLoggedIn", true);
   }
 
   @override
-  Future<void> logout() async {
+  Future<void> storeUserId(String userId) async {
+    var box = Hive.box("sessionBox");
+    await box.put("userIdKey", userId);
+  }
+
+  @override
+  Future<void> clearUser() async {
     var box = Hive.box("sessionBox");
     await box.delete("accessToken");
+    await box.put("isLoggedIn", false);
+  }
+
+  @override
+  Future<String> logOut() async {
+    @override
+    final box = Hive.box("sessionBox");
+    final userId = box.get("userIdKey");
+    if (userId == null) {
+      throw Exception('User not found');
+    }
+    try {
+      final response = await dio.delete('/users/delete/$userId');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        if (response.data != null && response.data is Map<String, dynamic>) {
+          final responseData = response.data as Map<String, dynamic>;
+          final message =
+              responseData['message'] as String? ?? 'Logged out successfully';
+          if (message == 'Logged out successfully') {
+            await clearUser();
+          }
+
+          return message;
+        } else {
+          throw Exception('Unexpected response format');
+        }
+      } else {
+        throw Exception('Failed with status code: ${response.statusCode}');
+      }
+    } on DioException catch (dioErro) {
+      if (dioErro.response != null) {
+        if (dioErro.response!.statusCode == 401) {
+          throw Exception('invalid userId');
+        } else {
+          final errorMessage = dioErro.response!.data['message'] as String? ??
+              'Failed to verify OTP';
+          throw Exception(errorMessage);
+        }
+      } else {
+        throw Exception('Network or server error');
+      }
+    } catch (e) {
+      throw LoginException('Unexpected error occurred: $e');
+    }
   }
 }

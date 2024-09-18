@@ -21,8 +21,8 @@ class UserRepositoryImpl implements UsersRepository {
   }
 
   @override
-  Future<void> logout() async {
-    await remoteDataSource.logout();
+  Future<String> logout() async {
+    return await remoteDataSource.logOut();
   }
 
   @override
@@ -49,4 +49,9 @@ class UserRepositoryImpl implements UsersRepository {
   Future<String> resendVerificationCode(String email) async {
     return await remoteDataSource.resendVerificationCode(email);
   }
+
+  // @override
+  // Future<bool> isLoggedIn() {
+  //   return remoteDataSource.isLoggedIn();
+  // }
 }

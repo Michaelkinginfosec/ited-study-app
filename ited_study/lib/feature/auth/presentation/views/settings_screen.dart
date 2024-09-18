@@ -1,16 +1,31 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ited_study/core/constants/boxsize.dart';
 import 'package:ited_study/core/constants/text_style.dart.dart';
 import 'package:ited_study/core/route/route.dart';
+import 'package:ited_study/feature/auth/presentation/providers/logout_provide.dart';
 
-class SetttingsScreen extends StatelessWidget {
+class SetttingsScreen extends ConsumerWidget {
   const SetttingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<LogoutState>(logoutNotifierProvider, (previous, next) {
+      if (next.status == LogoutStatus.success) {
+        context.pushReplacement(AppRoutes.login);
+      } else if (next.status == LogoutStatus.failure) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.error ?? 'Logout failed'),
+          ),
+        );
+      } else if (next.status == LogoutStatus.loading) {
+        CircularProgressIndicator.adaptive();
+      }
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -266,7 +281,72 @@ class SetttingsScreen extends StatelessWidget {
                     ),
                     CustomSizeBox.box,
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Color.fromRGBO(0, 5, 45, 1),
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/checkmark.png",
+                                    ),
+                                    Text(
+                                      "Alert",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                content: Text(
+                                  "Are you sure you want to signout?",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                actionsAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        )),
+                                    onPressed: () {
+                                      ref
+                                          .read(logoutNotifierProvider.notifier)
+                                          .logout();
+                                    },
+                                    child: Text("Sign Out",
+                                        style: TextStyle(
+                                          color: Color.fromRGBO(0, 5, 45, 1),
+                                        )),
+                                  ),
+                                ],
+                              );
+                            });
+                      },
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Row(

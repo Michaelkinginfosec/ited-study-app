@@ -19,12 +19,9 @@ class Users extends Equatable {
   @HiveField(4)
   final String password;
   @HiveField(5)
-  final String userId;
-  @HiveField(6)
   final bool verified; // Add verified field
 
   const Users({
-    required this.userId,
     required this.fullName,
     required this.email,
     required this.department,
@@ -34,7 +31,6 @@ class Users extends Equatable {
   });
 
   Users copyWith({
-    String? userId,
     String? fullName,
     String? email,
     String? department,
@@ -43,7 +39,6 @@ class Users extends Equatable {
     bool? verified,
   }) {
     return Users(
-      userId: userId ?? this.userId,
       fullName: fullName ?? this.fullName,
       email: email ?? this.email,
       department: department ?? this.department,
@@ -55,7 +50,6 @@ class Users extends Equatable {
 
   UserEntity toEntity() {
     return UserEntity(
-      userId: userId,
       fullName: fullName,
       email: email,
       department: department,
@@ -67,7 +61,6 @@ class Users extends Equatable {
 
   static Users fromEntity(UserEntity entity) {
     return Users(
-      userId: entity.userId,
       fullName: entity.fullName,
       email: entity.email,
       department: entity.department,
@@ -85,7 +78,7 @@ class Users extends Equatable {
       department,
       level,
       password,
-      userId,
+
       verified, // Include verified field in equality check
     ];
   }

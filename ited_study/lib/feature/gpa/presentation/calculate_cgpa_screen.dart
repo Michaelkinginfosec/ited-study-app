@@ -84,6 +84,13 @@ class CalculateCGPAScreen extends StatelessWidget {
                 fontFamily: "Inter",
               ),
             ),
+            Container(
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.red,
+              ),
+            )
           ],
         ),
       ),

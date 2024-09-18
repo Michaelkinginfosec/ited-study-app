@@ -17,33 +17,30 @@ class UserEntityAdapter extends TypeAdapter<UserEntity> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UserEntity(
-      userId: fields[0] as String,
-      fullName: fields[1] as String,
-      email: fields[2] as String,
-      department: fields[3] as String,
-      level: fields[4] as String,
-      password: fields[5] as String,
-      verified: fields[6] as bool,
+      fullName: fields[0] as String,
+      email: fields[1] as String,
+      department: fields[2] as String,
+      level: fields[3] as String,
+      password: fields[4] as String,
+      verified: fields[5] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserEntity obj) {
     writer
-      ..writeByte(7)
-      ..writeByte(0)
-      ..write(obj.userId)
-      ..writeByte(1)
-      ..write(obj.fullName)
-      ..writeByte(2)
-      ..write(obj.email)
-      ..writeByte(3)
-      ..write(obj.department)
-      ..writeByte(4)
-      ..write(obj.level)
-      ..writeByte(5)
-      ..write(obj.password)
       ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.fullName)
+      ..writeByte(1)
+      ..write(obj.email)
+      ..writeByte(2)
+      ..write(obj.department)
+      ..writeByte(3)
+      ..write(obj.level)
+      ..writeByte(4)
+      ..write(obj.password)
+      ..writeByte(5)
       ..write(obj.verified);
   }
 

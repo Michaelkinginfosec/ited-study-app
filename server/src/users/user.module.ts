@@ -10,6 +10,7 @@ import { UserResetToken, UserResetTokenSchema } from "src/users/schema/reset-tok
 import { EmailService } from "src/common/service/mail.service";
 import { UserRefreshToken, UserRefreshTokenSchema } from "./schema/user-refresh-token.schema";
 import { JwtService } from "@nestjs/jwt";
+import { AccessToken, AccessTokenSchema } from "./schema/access-token.schema";
 
 @Module({
     imports: [
@@ -29,6 +30,10 @@ import { JwtService } from "@nestjs/jwt";
             {
                 name: UserRefreshToken.name,
                 schema: UserRefreshTokenSchema
+            },
+            {
+                name: AccessToken.name,
+                schema: AccessTokenSchema
             }
         ])
     ],

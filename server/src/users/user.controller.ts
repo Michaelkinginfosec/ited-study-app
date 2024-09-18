@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserDTO } from "src/users/dtos/user.dto";
 import { ForgotPasswordDTO } from "src/common/dto/forgot-password.dto";
@@ -66,8 +66,17 @@ export class UserController {
         return await this.userService.login(loginDto);
     }
 
-    @Get(':id')
-    async getUser(@Param("id") userId: string) {
-        return await this.userService.getUser(userId);
+    // @Get(':id')
+    // async getUser(@Param("id") userId: string) {
+    //     return await this.userService.getUser(userId);
+    // }
+    @Get(":id")
+    async getUserAccessToken(@Param("id") userId: string) {
+        return await this.userService.getUserAccessToken(userId);
     }
+    @Delete('delete/:id')
+    async logOut(@Param('id') userId: string) {
+        return await this.userService.logOut(userId);
+    }
+
 }

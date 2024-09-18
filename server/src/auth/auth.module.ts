@@ -17,6 +17,7 @@ import { SendOTPService } from "src/common/service/send-otp.service";
 import { UserResetToken, UserResetTokenSchema } from "src/users/schema/reset-token.schema";
 
 import { UserRefreshToken, UserRefreshTokenSchema } from "src/users/schema/user-refresh-token.schema";
+import { AccessToken, AccessTokenSchema } from "src/users/schema/access-token.schema";
 
 
 @Module({
@@ -50,6 +51,10 @@ import { UserRefreshToken, UserRefreshTokenSchema } from "src/users/schema/user-
             {
                 name: UserRefreshToken.name,
                 schema: UserRefreshTokenSchema
+            },
+            {
+                name: AccessToken.name,
+                schema: AccessTokenSchema
             }
         ])
     ],

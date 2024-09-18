@@ -193,7 +193,6 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 if (_formKey.currentState?.validate() ??
                                     false) {
                                   final user = Users(
-                                    userId: '',
                                     verified: false,
                                     fullName: _fullNameController.text,
                                     email: _emailController.text,
