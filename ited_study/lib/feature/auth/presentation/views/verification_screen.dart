@@ -70,6 +70,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       }
     });
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 50),
         child: Column(

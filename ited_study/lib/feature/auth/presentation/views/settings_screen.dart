@@ -27,7 +27,9 @@ class SetttingsScreen extends ConsumerWidget {
       }
     });
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           "Settings",
           style: CustomTextStyles.mediumSubtitleText,

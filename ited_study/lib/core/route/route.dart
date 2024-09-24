@@ -16,4 +16,6 @@ class AppRoutes {
   static const String responsive = '/';
   static const String adminlogin = '/adminlogin';
   static const String course = '/course';
+  static const String note = '/note';
+  static const String coursenote = '/coursenote';
 }

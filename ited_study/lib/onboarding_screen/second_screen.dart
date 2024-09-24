@@ -2,20 +2,21 @@
 
 import 'package:flutter/material.dart';
 
-class ThirdScreen extends StatelessWidget {
-  const ThirdScreen({super.key});
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset("assets/images/third_screen.png"),
+          Image.asset("assets/images/second_screen.png"),
           SizedBox(height: 30),
           Text(
-            "Congrats!!",
+            "Welcome to ITed!",
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -25,7 +26,7 @@ class ThirdScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              "Sit back, relax, and get ready to learn. You are just moments away from setting up your personalized course.",
+              "Welcome to your gateway of knowledge—",
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -36,7 +37,7 @@ class ThirdScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              "every lesson is a step closer to your dreams!",
+              "let's make every moment count!" ",",
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,

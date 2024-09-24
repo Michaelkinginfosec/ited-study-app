@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ited_study/feature/auth/data/repositories/user_repository_impl.dart';
-import 'package:ited_study/feature/auth/domain/usecases/isloggedin_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/login_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/logout_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/resend_otp_usecase.dart';
@@ -58,12 +57,6 @@ final loginUsecaseProvider = Provider<LoginUsecase>(
 final resendOTPUsecaseProvider = Provider<ResendOTPUsecase>((ref) {
   return ResendOTPUsecase(ref.read(usersRepositoryProvider));
 });
-
-// //isloggedin usecase provider
-
-// final isLoggedInUsecaseProvider = Provider<IsLoggedInUsecase>((ref) {
-//   return IsLoggedInUsecase(ref.read(usersRepositoryProvider));
-// });
 
 //logout use case provider
 

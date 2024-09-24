@@ -77,6 +77,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
     );
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(),
       body: SafeArea(
         child: SingleChildScrollView(

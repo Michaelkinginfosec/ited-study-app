@@ -62,6 +62,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
     });
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

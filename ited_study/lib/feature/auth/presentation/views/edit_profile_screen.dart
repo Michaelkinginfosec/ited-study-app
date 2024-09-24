@@ -24,6 +24,7 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

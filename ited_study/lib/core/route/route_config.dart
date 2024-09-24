@@ -1,10 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:ited_study/feature/admin/presentation/views/admin_login_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/change_password_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/edit_profile_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/forgot_password_screen.dart';
@@ -15,10 +12,10 @@ import 'package:ited_study/feature/gpa/presentation/calculate_cgpa_screen.dart';
 import 'package:ited_study/feature/gpa/presentation/cgpa_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/about_us.dart';
 import 'package:ited_study/feature/auth/presentation/views/nav_screen.dart';
-import 'package:ited_study/views/onboarding_screen/onboarding_screen.dart';
+import 'package:ited_study/feature/notes/presentation/views/course_note_screen.dart';
+import 'package:ited_study/feature/notes/presentation/views/notes_screen.dart';
+import 'package:ited_study/onboarding_screen/onboarding_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/settings_screen.dart';
-import 'package:ited_study/views/responsive/responsive.dart';
-
 import '../../feature/auth/presentation/views/activate_app_screen.dart';
 import '../../feature/auth/presentation/views/scholarship_screen.dart';
 import '../../feature/notes/presentation/views/course_screen.dart';
@@ -28,16 +25,8 @@ final box = Hive.box('sessionBox');
 final isLoggedIn = box.get("isLoggedIn", defaultValue: false);
 
 final router = GoRouter(
-  initialLocation: isLoggedIn ? AppRoutes.navscreen : AppRoutes.responsive,
+  initialLocation: isLoggedIn ? AppRoutes.navscreen : AppRoutes.onboarding,
   routes: [
-    GoRoute(
-      name: "/responsive",
-      path: AppRoutes.responsive,
-      builder: (context, state) => Responsive(
-        mobileAndIpad: OnboardingScreen(),
-        desktop: AdminLoginScreen(),
-      ),
-    ),
     GoRoute(
       name: "/onboarding",
       path: AppRoutes.onboarding,
@@ -113,6 +102,16 @@ final router = GoRouter(
       name: '/course',
       path: AppRoutes.course,
       builder: (context, state) => CourseScreen(),
-    )
+    ),
+    GoRoute(
+      name: '/note',
+      path: AppRoutes.note,
+      builder: (context, state) => NotesScreen(),
+    ),
+    GoRoute(
+      name: '/coursenote',
+      path: AppRoutes.coursenote,
+      builder: (context, state) => CourseNoteScreen(),
+    ),
   ],
 );

@@ -21,6 +21,7 @@ class NavScreen extends ConsumerWidget {
       SetttingsScreen(),
     ];
     return Scaffold(
+      backgroundColor: Colors.white,
       body: screens[currentIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(
