@@ -49,6 +49,21 @@ class CustomTextField extends StatelessWidget {
             color: CustomTextStyles.textFieldColor,
           ),
         ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50),
+          borderSide: const BorderSide(
+            color: Color.fromRGBO(0, 5, 45, 1),
+            width: 1,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50),
+          borderSide: const BorderSide(
+            color: Color.fromRGBO(0, 5, 45, 1),
+            width: 1,
+          ),
+        ),
+        enabled: true,
         fillColor: CustomTextStyles.textFieldColor,
         filled: true,
       ),

@@ -55,7 +55,7 @@ export class UserService {
 
         try {
 
-            // Generate numeric OTP
+
             const code = this.generateNumericOTP(5);
             if (!code) {
                 throw new HttpException("Could not generate OTP", HttpStatus.BAD_REQUEST);
@@ -81,7 +81,6 @@ export class UserService {
             throw new BadRequestException("Could not create user");
 
         } catch (error) {
-            console.error('Error creating user:', error);
 
             if (error.code === 11000) {
                 if (error.message.includes('email')) {
@@ -105,11 +104,11 @@ export class UserService {
         return this.userModel.findById(userId);
     }
 
-    //resend verification code 
+
     async resendVerification(resendVerificationDto: resendVerificationDTO) {
         const { email } = resendVerificationDto
 
-        // Check if the user exists
+
         const user = await this.userModel.findOne({ email });
 
 
@@ -117,22 +116,22 @@ export class UserService {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
-        // Optionally, check if the user is already verified
+
         if (user.verified) {
             throw new HttpException('User is already verified', HttpStatus.BAD_REQUEST);
         }
 
-        // Generate numeric OTP
+
         const code = this.generateNumericOTP(5);
         if (!code) {
             throw new HttpException("Could not generate OTP", HttpStatus.BAD_REQUEST);
         }
 
-        // Set new expiry date for the OTP
+
         const expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getMinutes() + 5);
 
-        // Update or create OTP entry in the database
+
         await this.SendVerificationCodeModel.findOneAndUpdate(
 
             { email, userId: user._id },
@@ -140,7 +139,7 @@ export class UserService {
             { upsert: true, new: true }
         );
 
-        // Send OTP via the configured service
+
         await this.sendOtpService.sendOTP(email, code);
     }
 
@@ -182,24 +181,24 @@ export class UserService {
     }
 
     async verifyOTP(@Req() req: Request) {
-        // Retrieve the OTP record from the middleware
+
         const otpRecord = req['otpRecord'];
 
         if (!otpRecord) {
             throw new HttpException('Invalid OTP verification request', HttpStatus.BAD_REQUEST);
         }
 
-        // Fetch the user using userId from the OTP record
+
         const user = await this.userModel.findById(otpRecord.userId);
         if (!user) {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
-        // Update user's email verification status
+
         user.verified = true;
         await user.save();
 
-        // Remove the OTP record after successful verification
+
         return { message: 'Email successfully verified' };
     }
 
@@ -236,7 +235,7 @@ export class UserService {
         if (!user) {
             throw new InternalServerErrorException();
         }
-        //change password
+
         user.password = await encodePassword(newPassword);
         await user.save()
         return { message: 'Password successfully reset' };
@@ -271,12 +270,12 @@ export class UserService {
         } catch (error) {
 
 
-            // Re-throw the error if it's an expected exception
+
             if (error instanceof UnauthorizedException) {
                 throw error;
             }
 
-            // Wrap any other unknown errors in a BadRequestException
+
             throw new BadRequestException("An unknown error occurred");
         }
     }
@@ -297,7 +296,7 @@ export class UserService {
 
 
 
-    //Generate user token
+
     async generateUsersToken(userId) {
         const payload = { userId };
         const accessToken = this.jwtService.sign(payload, { expiresIn: '40H' });
@@ -308,7 +307,7 @@ export class UserService {
         return { accessToken }
     }
 
-    //Refresh user token
+
     async refreshTokens(refreshToken: string) {
         const token = await this.userRefreshTokenModel.findOne({
             token: refreshToken,
@@ -320,29 +319,29 @@ export class UserService {
         return this.generateUsersToken(token.userId);
     }
 
-    // //getuser 
-    // async getUser(userId: string) {
-    //     try {
-    //         if (!Types.ObjectId.isValid(userId)) {
-    //             throw new BadRequestException('User not found!');
-    //         }
-    //         const user = await this.userModel.findById(userId);
-    //         if (!user) {
-    //             throw new NotFoundException('User not found!');
-    //         }
-    //         return user;
-    //     } catch (error) {
-    //         if (error.name === 'CastError') {
-    //             throw new BadRequestException('Invalid User ID format!');
-    //         }
 
-    //         if (error instanceof BadRequestException) {
-    //             throw new BadRequestException(error.message);
-    //         }
-    //         throw error;
-    //     }
 
-    // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     async getUserAccessToken(userId: string) {
         try {

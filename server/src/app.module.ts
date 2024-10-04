@@ -1,25 +1,27 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 import Configuration from './common/config/config'
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { UserModule } from './users/user.module';
 import { EmailService } from './common/service/mail.service';
 import { OTPVerificationMiddleware } from './common/middleware/otp-verification.middleware';
 import { SendVerificationCode, SendVerificationCodeSchema } from './users/schema/otp.schema';
+import { NotesModule } from './notes/notes.module';
+import { configureCloudinary } from './common/config/cloudinary.config';
+import { PastQuestionModule } from './questions/past-question.module';
+
 
 
 @Module({
   imports: [
 
     ConfigModule.forRoot({
-      load: [Configuration],
+      load: [Configuration,],
       isGlobal: true,
     }),
     JwtModule.registerAsync({
@@ -53,9 +55,9 @@ import { SendVerificationCode, SendVerificationCodeSchema } from './users/schema
     ]),
     AdminModule,
     AuthModule,
-    UserModule
-
-
+    UserModule,
+    NotesModule,
+    PastQuestionModule
   ],
   providers: [
     EmailService,
@@ -63,7 +65,11 @@ import { SendVerificationCode, SendVerificationCodeSchema } from './users/schema
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    }],
+    },
+    {
+      provide: 'CLOUDINARY', // Provide the configured Cloudinary instance
+      useValue: configureCloudinary(), // Use the configureCloudinary function
+    },],
   exports: [EmailService],
   controllers: [],
 

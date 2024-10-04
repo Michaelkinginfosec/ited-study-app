@@ -10,7 +10,6 @@ async function bootstrap() {
   app.enableCors(
 
   )
-
   //global validation pips
   app.useGlobalPipes(new ValidationPipe({
     transform: true,

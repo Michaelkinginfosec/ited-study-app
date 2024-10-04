@@ -38,7 +38,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
           await snackBarController.closed;
-          // ref.read(isLoggedInNotifierProvider.notifier).checkLoginStatus();
+       
 
           context.pushReplacement(
             AppRoutes.navscreen,
