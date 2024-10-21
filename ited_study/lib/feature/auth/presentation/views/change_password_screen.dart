@@ -2,11 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ited_study/core/widgets/custom_app_bar.dart';
+import 'package:ited_study/feature/auth/presentation/providers/change_password_provider.dart';
 
 import '../../../../core/constants/boxsize.dart';
 import '../../../../core/constants/text_style.dart.dart';
 
+import '../../../../core/route/route.dart';
 import '../widgets/text_field.dart';
 
 class ChangePasswordScreen extends ConsumerStatefulWidget {
@@ -23,6 +26,28 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final TextEditingController _newPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final changePasswordState = ref.watch(changePasswordNotifierProvider);
+    ref.listen<ChangePasswordState>(
+      changePasswordNotifierProvider,
+      (previouse, next) async {
+        if (next.status == ChangePasswordStatus.success) {
+          final snackBar = SnackBar(
+            content: Text('Password changed successfully'),
+          );
+          ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+              snackBarController =
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          await snackBarController.closed;
+          context.pushReplacement(AppRoutes.login);
+        } else if (next.status == ChangePasswordStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next.error),
+            ),
+          );
+        }
+      },
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(),
@@ -91,23 +116,37 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         },
                       ),
                       CustomSizeBox.extral,
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                CustomTextStyles.loginsignupButtonColor,
-                            minimumSize: Size(228, 41),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                      changePasswordState.status == ChangePasswordStatus.loading
+                          ? Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            )
+                          : Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  ref
+                                      .read(changePasswordNotifierProvider
+                                          .notifier)
+                                      .changePassword(
+                                        _oldPasswordController.text,
+                                        _newPasswordController.text,
+                                      );
+                                  _oldPasswordController.clear();
+                                  _newPasswordController.clear();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      CustomTextStyles.loginsignupButtonColor,
+                                  minimumSize: Size(228, 41),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Change Password",
+                                  style: CustomTextStyles.buttonText,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            "Log In",
-                            style: CustomTextStyles.buttonText,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

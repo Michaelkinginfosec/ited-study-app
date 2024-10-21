@@ -9,7 +9,7 @@ class SignUpUseCase {
 
   SignUpUseCase(this.repository);
 
-  Future<String> call(Users user) async {
+  Future<String> signUp(Users user) async {
     return await repository.signUp(user);
   }
 }

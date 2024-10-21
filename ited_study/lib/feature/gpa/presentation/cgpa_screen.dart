@@ -1,11 +1,35 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ited_study/core/route/route.dart';
 
-class CGPAScreen extends StatelessWidget {
+class CGPAScreen extends StatefulWidget {
   const CGPAScreen({super.key});
+
+  @override
+  State<CGPAScreen> createState() => _CGPAScreenState();
+}
+
+class _CGPAScreenState extends State<CGPAScreen> {
+  double firstSemesterGP = 0.00;
+  double secondSemesterGP = 0.00;
+  double value = 0.00;
+  @override
+  void initState() {
+    super.initState();
+    getGP();
+  }
+
+  void getGP() {
+    var box = Hive.box('gp');
+    setState(() {
+      firstSemesterGP = box.get('firstSemester') ?? 0.00;
+      secondSemesterGP = box.get('secondSemester') ?? 0.00;
+      value = box.get('cgpa') ?? 0.00;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +48,7 @@ class CGPAScreen extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            Text(
+            const Text(
               "Calculate and keep record of your grades",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -34,20 +58,20 @@ class CGPAScreen extends StatelessWidget {
                 fontFamily: "Inter",
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Text(
-              "0.00",
+              value.toStringAsFixed(2),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 50,
                 color: Color.fromRGBO(0, 5, 45, 1),
                 fontWeight: FontWeight.bold,
                 fontFamily: "Inter",
               ),
             ),
-            Text(
+            const Text(
               "Total C.G.P.A",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -57,14 +81,14 @@ class CGPAScreen extends StatelessWidget {
                 fontFamily: "Inter",
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Container(
               width: double.infinity,
               height: 120,
               decoration: BoxDecoration(
-                  color: Color.fromRGBO(217, 217, 217, 1),
+                  color: const Color.fromRGBO(217, 217, 217, 1),
                   borderRadius: BorderRadius.circular(10)),
               child: Column(
                 children: [
@@ -77,7 +101,7 @@ class CGPAScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "100 level",
                           style: TextStyle(
                             fontSize: 20,
@@ -89,7 +113,7 @@ class CGPAScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               "First Semester:",
                               style: TextStyle(
                                 fontSize: 13,
@@ -98,8 +122,8 @@ class CGPAScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '[0.00]',
-                              style: TextStyle(
+                              '$firstSemesterGP',
+                              style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(0, 5, 45, 1),
@@ -110,7 +134,7 @@ class CGPAScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               "Second Semester:",
                               style: TextStyle(
                                 fontSize: 13,
@@ -119,8 +143,8 @@ class CGPAScreen extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '[0.00]',
-                              style: TextStyle(
+                              '$secondSemesterGP',
+                              style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 color: Color.fromRGBO(0, 5, 45, 1),
@@ -128,7 +152,7 @@ class CGPAScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Padding(
@@ -136,7 +160,7 @@ class CGPAScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              GestureDetector(
+                              InkWell(
                                 onTap: () {
                                   context.push(AppRoutes.calculatecgpa);
                                 },
@@ -145,9 +169,9 @@ class CGPAScreen extends StatelessWidget {
                                   height: 19,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
-                                    color: Color.fromRGBO(0, 5, 45, 1),
+                                    color: const Color.fromRGBO(0, 5, 45, 1),
                                   ),
-                                  child: Center(
+                                  child: const Center(
                                     child: Text(
                                       "Input",
                                       style: TextStyle(color: Colors.white),
@@ -155,17 +179,26 @@ class CGPAScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: 71,
-                                height: 19,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Color.fromRGBO(248, 6, 6, 0.9),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "Delete",
-                                    style: TextStyle(color: Colors.white),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    var box = Hive.box('gp');
+                                    box.delete('cgpa');
+                                    value = 0;
+                                  });
+                                },
+                                child: Container(
+                                  width: 71,
+                                  height: 19,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: const Color.fromRGBO(248, 6, 6, 0.9),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -178,10 +211,10 @@ class CGPAScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            Text(
+            const Text(
               "A man that fails to plan, planned to fail. Stay focused as the sky reamins your starting point.",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -190,23 +223,33 @@ class CGPAScreen extends StatelessWidget {
                 color: Color.fromRGBO(1, 1, 1, 1),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             ),
-            Container(
-              width: 208,
-              height: 31,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Color.fromRGBO(0, 5, 45, 1),
-              ),
-              child: Center(
-                child: Text(
-                  "Calculate",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+            InkWell(
+              onTap: () {
+                setState(() {
+                  var box = Hive.box('gp');
+                  final totalGPA = (firstSemesterGP + secondSemesterGP) / 2;
+                  box.put('cgpa', totalGPA);
+                  value = box.get('cgpa');
+                });
+              },
+              child: Container(
+                width: 208,
+                height: 31,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  color: const Color.fromRGBO(0, 5, 45, 1),
+                ),
+                child: const Center(
+                  child: Text(
+                    "Calculate",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

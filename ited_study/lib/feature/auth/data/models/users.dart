@@ -1,5 +1,3 @@
-// lib/feature/auth/data/models/users.dart
-
 import 'package:equatable/equatable.dart';
 import 'package:hive/hive.dart';
 import '../../domain/entities/user_entity.dart';
@@ -19,7 +17,9 @@ class Users extends Equatable {
   @HiveField(4)
   final String password;
   @HiveField(5)
-  final bool verified; // Add verified field
+  final bool verified;
+  @HiveField(6)
+  final String schoolId;
 
   const Users({
     required this.fullName,
@@ -27,7 +27,8 @@ class Users extends Equatable {
     required this.department,
     required this.level,
     required this.password,
-    this.verified = false, // Default value if not provided
+    this.verified = false,
+    required this.schoolId,
   });
 
   Users copyWith({
@@ -37,6 +38,7 @@ class Users extends Equatable {
     String? level,
     String? password,
     bool? verified,
+    String? schoolId,
   }) {
     return Users(
       fullName: fullName ?? this.fullName,
@@ -45,6 +47,7 @@ class Users extends Equatable {
       level: level ?? this.level,
       password: password ?? this.password,
       verified: verified ?? this.verified,
+      schoolId: schoolId ?? this.schoolId,
     );
   }
 
@@ -55,7 +58,8 @@ class Users extends Equatable {
       department: department,
       level: level,
       password: password,
-      verified: verified, // Include verified field
+      verified: verified,
+      schoolId: schoolId,
     );
   }
 
@@ -66,7 +70,8 @@ class Users extends Equatable {
       department: entity.department,
       level: entity.level,
       password: entity.password,
-      verified: entity.verified, // Include verified field
+      verified: entity.verified,
+      schoolId: entity.schoolId,
     );
   }
 
@@ -78,8 +83,7 @@ class Users extends Equatable {
       department,
       level,
       password,
-
-      verified, // Include verified field in equality check
+      verified,
     ];
   }
 }

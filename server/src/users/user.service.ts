@@ -1,6 +1,6 @@
-import { BadRequestException, Body, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, Req, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Body, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, Param, Req, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import mongoose, { Model, Types } from "mongoose";
+import mongoose, { Model, Mongoose, Types } from "mongoose";
 
 import { UserDTO } from "src/users/dtos/user.dto";
 
@@ -22,6 +22,9 @@ import { UserRefreshToken } from "./schema/user-refresh-token.schema";
 import { access } from "fs";
 import { resendVerificationDTO } from "./dtos/verification.dto";
 import { AccessToken } from "./schema/access-token.schema";
+import { UpdateUserDTO } from "./dtos/update-user.dto";
+import { Type } from "class-transformer";
+import { UpdatePasswordDTO } from "./dtos/update_user.dto";
 
 
 
@@ -94,14 +97,93 @@ export class UserService {
     }
 
 
+
+    async updateUser(updateUserDto: UpdateUserDTO, userId: string) {
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid User');
+        }
+
+        const existingUser = await this.userModel.findById(new mongoose.Types.ObjectId(userId));
+        if (!existingUser) {
+            throw new NotFoundException('User not found');
+        }
+        try {
+            const updatedUser = await this.userModel.findByIdAndUpdate(
+                userId,
+                updateUserDto,
+                { new: true }
+            );
+
+            return { message: 'User updated successfully', updatedUser };
+        } catch (error) {
+            if (error.code === 'ECONNRESET') {
+                throw new InternalServerErrorException('Connection was reset, please try again later.');
+            } else {
+
+                throw new InternalServerErrorException('An error occurred while updating the user');
+            }
+        }
+    }
+
+    async changePassword(updatePasswordDto: UpdatePasswordDTO, userId: string) {
+        const { oldPassword, newPassword } = updatePasswordDto;
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new BadRequestException('Invalid User');
+        }
+        const user = await this.userModel.findById(new mongoose.Types.ObjectId(userId));
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+
+        if (typeof user.password !== 'string') {
+            throw new BadRequestException('User password is not valid');
+        }
+
+
+        const passwordMatch = await comparePassword(oldPassword, user.password);
+        if (!passwordMatch) {
+            throw new BadRequestException('Old Password is incorrect');
+        }
+
+
+        const updatedUser = await this.userModel.updateOne(
+            { _id: user._id },
+            { password: encodePassword(newPassword) }
+        );
+        return { message: "Password changed successfully" };
+    }
+
+
     async getAllUser() {
         const users = this.userModel.find();
 
         return users;
     }
 
-    async findUserById(userId: mongoose.Types.ObjectId) {
-        return this.userModel.findById(userId);
+    async findUserById(userId: string) {
+        try {
+            if (!Types.ObjectId.isValid(userId)) {
+                throw new BadRequestException('Invalid User')
+            }
+            const user = await this.userModel.findById(userId);
+            return user;
+        } catch (error) {
+            if (error.name === 'CastError') {
+                console.log(error)
+                throw new BadRequestException('Invalid User ID format!');
+
+            }
+
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            }
+            throw error;
+        }
+
+
+
     }
 
 
@@ -318,30 +400,6 @@ export class UserService {
         }
         return this.generateUsersToken(token.userId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     async getUserAccessToken(userId: string) {
         try {

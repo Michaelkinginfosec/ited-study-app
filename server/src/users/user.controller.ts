@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards, } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserDTO } from "src/users/dtos/user.dto";
 import { ForgotPasswordDTO } from "src/common/dto/forgot-password.dto";
@@ -6,6 +6,9 @@ import { ResetPasswordDTO } from "./dtos/reset-password.dto";
 import { Request, Response } from "express";
 import { LoginDTO } from "./dtos/login.dto";
 import { resendVerificationDTO } from "./dtos/verification.dto";
+import { UpdateUserDTO } from "./dtos/update-user.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { UpdatePasswordDTO } from "./dtos/update_user.dto";
 
 @Controller('users')
 export class UserController {
@@ -22,6 +25,11 @@ export class UserController {
                 error.getStatus ? error.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
+    }
+    @UseGuards(AuthGuard('local'))
+    @Patch('update/:userId')
+    async updateUser(@Param('userId') userId: string, @Body() updateUserDto: UpdateUserDTO,) {
+        return this.userService.updateUser(updateUserDto, userId);
     }
 
     @Post('resend-verification')
@@ -66,17 +74,25 @@ export class UserController {
         return await this.userService.login(loginDto);
     }
 
-    // @Get(':id')
-    // async getUser(@Param("id") userId: string) {
-    //     return await this.userService.getUser(userId);
-    // }
-    @Get(":id")
+
+    @Get("token/:id")
     async getUserAccessToken(@Param("id") userId: string) {
         return await this.userService.getUserAccessToken(userId);
     }
     @Delete('delete/:id')
     async logOut(@Param('id') userId: string) {
         return await this.userService.logOut(userId);
+    }
+
+    @Patch('change-password/:id')
+    async changePassword(@Body() updatePasswordDto: UpdatePasswordDTO, @Param('id') userId: string) {
+        const { oldPassword, newPassword } = updatePasswordDto
+        return await this.userService.changePassword(updatePasswordDto, userId)
+    }
+
+    @Get(':id')
+    async getUserById(@Param('id') userId: string) {
+        return await this.userService.findUserById(userId);
     }
 
 }

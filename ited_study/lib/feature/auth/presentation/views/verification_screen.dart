@@ -131,7 +131,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                           onTap: () {
                             ref
                                 .read(resendOTPNotifierProvider.notifier)
-                                .resendOTPCode("osundemichael7@gmail.com");
+                                .resendOTPCode(widget.email);
                           },
                           child: Container(
                             width: 191,

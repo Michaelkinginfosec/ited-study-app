@@ -6,10 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:ited_study/core/constants/boxsize.dart';
 import 'package:ited_study/core/constants/text_style.dart.dart';
 import 'package:ited_study/core/route/route.dart';
-import 'package:ited_study/core/widgets/custom_app_bar.dart';
-
 import 'package:ited_study/feature/auth/presentation/providers/login_provider.dart';
 import 'package:ited_study/feature/auth/presentation/widgets/text_field.dart';
+import 'package:ited_study/feature/notes/presentation/providers/course_provider.dart';
+
+import '../providers/resend_otp_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -38,12 +39,11 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
           await snackBarController.closed;
-       
 
           context.pushReplacement(
             AppRoutes.navscreen,
           );
-        } else if (next.status == LoginStatus.failure) {
+        } else if (next.status == LoginStatus.error) {
           String errorMessage = next.error?.toString() ?? "Login Failed";
 
           if (errorMessage.contains('User is not verified')) {
@@ -59,6 +59,9 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
             await snackBarController.closed;
 
+            ref.read(resendOTPNotifierProvider.notifier).resendOTPCode(
+                  _emailController.text.trim(),
+                );
             context.push(
               AppRoutes.verification,
               extra: _emailController.text.trim(),
@@ -78,7 +81,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(),
+      appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -156,15 +159,24 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       CustomSizeBox.mediumBox,
                       loginState.status == LoginStatus.loading
-                          ? Center(child: CircularProgressIndicator.adaptive())
+                          ? Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            )
                           : Center(
                               child: ElevatedButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     ref
                                         .read(loginNotifierProvider.notifier)
-                                        .login(_emailController.text.trim(),
-                                            _passwordController.text.trim());
+                                        .login(
+                                          _emailController.text
+                                              .toLowerCase()
+                                              .trim(),
+                                          _passwordController.text.trim(),
+                                        );
+                                    ref
+                                        .read(courseNotifierProvider.notifier)
+                                        .getCourses();
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

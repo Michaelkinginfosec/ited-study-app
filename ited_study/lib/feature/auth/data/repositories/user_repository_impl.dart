@@ -50,8 +50,19 @@ class UserRepositoryImpl implements UsersRepository {
     return await remoteDataSource.resendVerificationCode(email);
   }
 
-  // @override
-  // Future<bool> isLoggedIn() {
-  //   return remoteDataSource.isLoggedIn();
-  // }
+  @override
+  Future<void> updateUser(
+      String fullName, String department, String level) async {
+    return await remoteDataSource.updateUser(fullName, department, level);
+  }
+
+  @override
+  Future<String> changePassword(String oldPassword, String newPassword) async {
+    return await remoteDataSource.changePassword(oldPassword, newPassword);
+  }
+
+  @override
+  Future<void> createSchool(String schoolName, String country) {
+    return remoteDataSource.createSchool(schoolName, country);
+  }
 }

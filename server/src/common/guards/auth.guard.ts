@@ -15,7 +15,7 @@ export class JWTAuthGuard implements CanActivate {
 
         try {
             const payload = this.jwtService.verify(token);
-            if (!payload || !payload.adminId) {
+            if (!payload || (!payload.userId || !payload.adminId)) {
                 throw new UnauthorizedException("Invalid admin Token")
             }
             request.user = payload;
@@ -35,3 +35,4 @@ export class JWTAuthGuard implements CanActivate {
     }
 
 }
+

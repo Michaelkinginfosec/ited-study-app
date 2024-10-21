@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Injectable, InternalServerErrorException, Param } from "@nestjs/common";
+import { BadRequestException, Body, Injectable, InternalServerErrorException, NotFoundException, Param } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { v2 as cloudinary } from 'cloudinary';
@@ -10,6 +10,7 @@ import { SchoolDTO } from "./dtos/schoo.dto";
 import { FullCourseCreationDTO } from "./dtos/full-course-creation.dto";
 import { Course, CourseDocument } from "./schemas/course.schema";
 import { title } from "process";
+import { count } from "console";
 
 
 
@@ -25,22 +26,33 @@ export class NotesService {
         const { country } = countryDto;
         const existingCountry = await this.countryModel.findOne({ country });
         if (existingCountry) {
-            throw new BadRequestException('Country already exists');
+            const countryExist = await this.countryModel.findOne({ country })
+            return { message: "country already exist", country: countryExist.country, countryId: countryExist._id };
         }
         const createcountry = await this.countryModel.create(countryDto)
         return {
             message: "country created",
             countryId: createcountry._id,
             country: createcountry.country
-            
+
         };
     }
+
+    async getCountry() {
+        const countries = await this.countryModel.find();
+        return countries
+    }
+
     async createNoteSchool(@Body() schoolDto: SchoolDTO) {
         const { school, countryId } = schoolDto;
         const existingCounryId = await this.countryModel.findOne({ _id: countryId });
         const existingSchool = await this.schoolModel.findOne({ school });
         if (existingSchool) {
-            throw new BadRequestException('School already exists');
+            return {
+                message: "school already exist",
+                school: existingSchool.school,
+                schoolId: existingSchool._id
+            };
         }
         if (!existingCounryId) {
             throw new BadRequestException('Country does not exist');
@@ -143,6 +155,28 @@ export class NotesService {
             throw new InternalServerErrorException('Unknow error occured');
         }
 
+
+    }
+
+    async fetchCourse() {
+        try {
+            const course = await this.courseModel.find();
+            if (!course) {
+                throw new NotFoundException('Course not found');
+            }
+            return course
+        } catch (error) {
+            if (error.name === 'CastError') {
+                console.log(error)
+                throw new BadRequestException('Invalid User ID format!');
+
+            }
+
+            if (error instanceof BadRequestException) {
+                throw new BadRequestException(error.message);
+            }
+            throw error;
+        }
 
     }
 

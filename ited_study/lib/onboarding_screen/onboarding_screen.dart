@@ -68,7 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildNextButton(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (_currentPage < 2) {
           _pageController.animateToPage(
@@ -77,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             curve: Curves.easeInOut,
           );
         } else {
-          context.push(AppRoutes.login);
+          context.push(AppRoutes.school);
         }
       },
       child: Container(

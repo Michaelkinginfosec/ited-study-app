@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ited_study/feature/auth/presentation/providers/update_user_provider.dart';
 
 import '../../../../core/constants/boxsize.dart';
 import '../../../../core/constants/text_style.dart.dart';
@@ -18,11 +19,27 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullNameController = TextEditingController();
-
   final TextEditingController _departmentController = TextEditingController();
   final TextEditingController _levelController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final updateUser = ref.watch(updateUserNotifierProvider);
+    ref.listen<UpdateUserState>(
+      updateUserNotifierProvider,
+      (previous, next) {
+        if (next.status == UpdateuserStatus.success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Update user success'),
+            ),
+          );
+        } else if (next.status == UpdateuserStatus.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(next.error ?? 'Update user failed')),
+          );
+        }
+      },
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(),
@@ -99,24 +116,37 @@ class EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       },
                     ),
                     CustomSizeBox.extral,
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              CustomTextStyles.loginsignupButtonColor,
-                          minimumSize: Size(249, 33),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    updateUser.status == UpdateuserStatus.loading
+                        ? Center(child: CircularProgressIndicator.adaptive())
+                        : Align(
+                            alignment: Alignment.center,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    CustomTextStyles.loginsignupButtonColor,
+                                minimumSize: Size(249, 33),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () {
+                                ref
+                                    .read(updateUserNotifierProvider.notifier)
+                                    .updateUser(
+                                      _fullNameController.text,
+                                      _departmentController.text,
+                                      _levelController.text.trim(),
+                                    );
+                                _departmentController.clear();
+                                _levelController.clear();
+                                _fullNameController.clear();
+                              },
+                              child: const Text(
+                                'Update',
+                                style: CustomTextStyles.buttonText,
+                              ),
+                            ),
                           ),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          'Finish',
-                          style: CustomTextStyles.buttonText,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

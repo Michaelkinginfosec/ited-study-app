@@ -23,13 +23,14 @@ class UserEntityAdapter extends TypeAdapter<UserEntity> {
       level: fields[3] as String,
       password: fields[4] as String,
       verified: fields[5] as bool,
+      schoolId: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserEntity obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.fullName)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class UserEntityAdapter extends TypeAdapter<UserEntity> {
       ..writeByte(4)
       ..write(obj.password)
       ..writeByte(5)
-      ..write(obj.verified);
+      ..write(obj.verified)
+      ..writeByte(6)
+      ..write(obj.schoolId);
   }
 
   @override

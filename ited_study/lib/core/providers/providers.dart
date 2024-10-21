@@ -6,60 +6,127 @@ import 'package:ited_study/feature/auth/domain/usecases/login_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/logout_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:ited_study/feature/auth/domain/usecases/verify_otp_usecase.dart';
+import 'package:ited_study/feature/notes/data/datasource/course_datasource.dart';
+import 'package:ited_study/feature/notes/data/repository/course_repository_impl.dart';
+import 'package:ited_study/feature/notes/domain/repository/course_repository.dart';
+import 'package:ited_study/feature/notes/domain/usecase/course_usecase.dart';
 import '../../feature/auth/data/datasources/remoteDataSource/user_remote_datasource.dart';
 import '../../feature/auth/domain/repositories/user_repository.dart';
+import '../../feature/auth/domain/usecases/change_password_usecase.dart';
+import '../../feature/auth/domain/usecases/create_school_usecase.dart';
 import '../../feature/auth/domain/usecases/sign_up_usecase.dart';
+import '../../feature/auth/domain/usecases/update_user_usecase.dart';
 
-//Navigation provider
 final navigationIndexProvider = StateProvider<int>((ref) => 0);
 
-//user repository provider
-final usersRepositoryProvider = Provider<UsersRepository>((ref) {
-  return UserRepositoryImpl(ref.read(usersRemoteDataSourceProvider));
-});
+final usersRepositoryProvider = Provider<UsersRepository>(
+  (ref) {
+    return UserRepositoryImpl(
+      ref.read(usersRemoteDataSourceProvider),
+    );
+  },
+);
 
-// Dio Provider
 final dioProvider = Provider<Dio>(
   (ref) {
-    return Dio(BaseOptions(
-      baseUrl: dotenv.env['API_BASE_URL'] ?? '',
-    ));
+    return Dio(
+      BaseOptions(
+        baseUrl: dotenv.env['API_BASE_URL'] ?? '',
+      ),
+    );
   },
 );
 
-// Users Remote Data Source Provider
 final usersRemoteDataSourceProvider = Provider<UsersRemoteDataSource>(
   (ref) {
-    return UserRemoteDatasourceImp(ref.read(dioProvider));
+    return UserRemoteDatasourceImp(
+      ref.read(dioProvider),
+    );
   },
 );
 
-// Sign Up Use Case Provider
+final courseRepositoryProvider = Provider<CourseRepository>(
+  (ref) {
+    return CourseRepositoryImpl(
+      ref.read(courseDatasourceProvider),
+    );
+  },
+);
+
+final courseDatasourceProvider = Provider<CourseDatasource>(
+  (ref) {
+    return CourseDatasourceImp(
+      ref.read(dioProvider),
+    );
+  },
+);
+
 final signUpUseCaseProvider = Provider<SignUpUseCase>(
   (ref) {
-    return SignUpUseCase(ref.read(usersRepositoryProvider));
+    return SignUpUseCase(
+      ref.read(usersRepositoryProvider),
+    );
   },
 );
 
-//verify otp provider
-final verifyOTPUsecaseProvider = Provider<VerifyOTPUsecase>(
-  (ref) {
-    return VerifyOTPUsecase(ref.read(usersRepositoryProvider));
-  },
-);
-
-//login usecase provider
 final loginUsecaseProvider = Provider<LoginUsecase>(
   (ref) {
-    return LoginUsecase(ref.read(usersRepositoryProvider));
+    return LoginUsecase(
+      ref.read(usersRepositoryProvider),
+    );
   },
 );
-final resendOTPUsecaseProvider = Provider<ResendOTPUsecase>((ref) {
-  return ResendOTPUsecase(ref.read(usersRepositoryProvider));
-});
 
-//logout use case provider
+final updateUserUsecaseProvidr = Provider<UpdateUserUsecase>(
+  (ref) {
+    return UpdateUserUsecase(
+      ref.read(usersRepositoryProvider),
+    );
+  },
+);
 
-final logoutUsecaseProvider = Provider<LogoutUsecase>((ref) {
-  return LogoutUsecase(ref.read(usersRepositoryProvider));
-});
+final verifyOTPUsecaseProvider = Provider<VerifyOTPUsecase>(
+  (ref) {
+    return VerifyOTPUsecase(
+      ref.read(usersRepositoryProvider),
+    );
+  },
+);
+
+final resendOTPUsecaseProvider = Provider<ResendOTPUsecase>(
+  (ref) {
+    return ResendOTPUsecase(
+      ref.read(usersRepositoryProvider),
+    );
+  },
+);
+
+final logoutUsecaseProvider = Provider<LogoutUsecase>(
+  (ref) {
+    return LogoutUsecase(
+      ref.read(usersRepositoryProvider),
+    );
+  },
+);
+
+final changePasswordUsecaseProvider = Provider<ChangePasswordUsecase>(
+  (ref) {
+    return ChangePasswordUsecase(
+      ref.read(usersRepositoryProvider),
+    );
+  },
+);
+
+final createSchoolUsecaseProvider = Provider<CreateSchoolUsecase>(
+  (ref) {
+    return CreateSchoolUsecase(ref.read(usersRepositoryProvider));
+  },
+);
+
+final courseUsecaseProvider = Provider<CourseUsecase>(
+  (ref) {
+    return CourseUsecase(
+      ref.read(courseRepositoryProvider),
+    );
+  },
+);

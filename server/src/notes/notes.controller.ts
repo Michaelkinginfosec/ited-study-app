@@ -18,6 +18,11 @@ export class NotesController {
     async createCountry(@Body() countryDto: CountryDTO) {
         return await this.noteService.createCountry(countryDto)
     }
+    //DONE: get country
+    @Get('get-country')
+    async getCountry() {
+        return await this.noteService.getCountry()
+    }
     @Post('create-school')
     async createNoteSchool(@Body() schoolDto: SchoolDTO) {
         return await this.noteService.createNoteSchool(schoolDto)
@@ -46,6 +51,9 @@ export class NotesController {
     async fullCourseCreation(@Body() fullCourseCreationDto: FullCourseCreationDTO) {
         return await this.noteService.fullCourseCreation(fullCourseCreationDto)
     }
-
+    @Get()
+    async getCourse() {
+        return await this.noteService.fetchCourse()
+    }
 
 }

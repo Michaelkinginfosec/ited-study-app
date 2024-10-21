@@ -120,6 +120,12 @@ class CustomTextStyles {
     fontFamily: 'inter',
     color: Color.fromRGBO(0, 5, 45, 1),
   );
+  static const TextStyle normalTextSetting2 = TextStyle(
+    fontWeight: FontWeight.w900,
+    fontSize: 30,
+    fontFamily: 'inter',
+    color: Color.fromRGBO(0, 5, 45, 1),
+  );
 
   static const Color textFieldColor = Color.fromRGBO(217, 217, 217, 1);
   static const Color textFieldBorderColor = Color.fromRGBO(181, 178, 178, 1);

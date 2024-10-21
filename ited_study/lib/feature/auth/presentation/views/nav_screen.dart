@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ited_study/core/providers/providers.dart';
 import 'package:ited_study/feature/auth/presentation/views/home_screen.dart';
 import 'package:ited_study/feature/auth/presentation/views/settings_screen.dart';
+import 'package:ited_study/feature/notes/presentation/views/course_screen.dart';
 
 import '../../../../core/widgets/custom_navigation_item.dart';
 
@@ -16,7 +17,7 @@ class NavScreen extends ConsumerWidget {
     final currentIndex = ref.watch(navigationIndexProvider);
     List<Widget> screens = [
       HomeScreen(),
-      SetttingsScreen(),
+      CourseScreen(),
       SetttingsScreen(),
       SetttingsScreen(),
     ];

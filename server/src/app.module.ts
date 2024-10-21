@@ -14,6 +14,7 @@ import { SendVerificationCode, SendVerificationCodeSchema } from './users/schema
 import { NotesModule } from './notes/notes.module';
 import { configureCloudinary } from './common/config/cloudinary.config';
 import { PastQuestionModule } from './questions/past-question.module';
+import { ScholarshipModule } from './scholarship/scholarship.module';
 
 
 
@@ -57,7 +58,8 @@ import { PastQuestionModule } from './questions/past-question.module';
     AuthModule,
     UserModule,
     NotesModule,
-    PastQuestionModule
+    PastQuestionModule,
+    ScholarshipModule,
   ],
   providers: [
     EmailService,

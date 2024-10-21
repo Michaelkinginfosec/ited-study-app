@@ -33,7 +33,7 @@ class SignUpNotifier extends StateNotifier<SignUpState> {
     state = state.copyWith(status: SignUpStatus.loading);
     try {
       final message =
-          await signUpUseCase(user); // Receive the message from use case
+          await signUpUseCase.signUp(user); // Receive the message from use case
       state = state.copyWith(status: SignUpStatus.success, message: message);
     } catch (e) {
       state = state.copyWith(status: SignUpStatus.failure, error: e.toString());

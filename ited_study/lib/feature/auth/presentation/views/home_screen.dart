@@ -4,8 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ited_study/core/route/route.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(0, 5, 45, 1),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Column(
+            children: <Widget>[
+              Text("Hello"),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +102,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     context.pushNamed(AppRoutes.course);
                   },
@@ -85,16 +114,17 @@ class HomeScreen extends StatelessWidget {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(3, 3),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0.1, 0.1),
                         ),
                       ],
                       color: Color.fromRGBO(22, 5, 209, 1),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
+                      padding: const EdgeInsets.only(left: 15, right: 8),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,65 +165,68 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(3, 3),
-                      ),
-                    ],
-                    color: Color.fromRGBO(247, 0, 0, 1),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 15, right: 3),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              'Past Questions',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              'Get access to updated past questions',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Image.asset(
-                          "assets/images/questions.png",
-                          height: 75,
+                InkWell(
+                  onTap: showBottomSheet,
+                  child: Container(
+                    width: double.infinity,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0.1, 0.1),
                         ),
                       ],
+                      color: Color.fromRGBO(247, 0, 0, 1),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                'Past Questions',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Get access to updated past questions',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Image.asset(
+                            "assets/images/questions.png",
+                            height: 75,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     context.push(AppRoutes.cgpascreen);
                   },
@@ -205,15 +238,15 @@ class HomeScreen extends StatelessWidget {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(3, 3),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0.1, 0.1),
                         ),
                       ],
                       color: Color.fromRGBO(9, 108, 19, 1),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 3),
+                      padding: const EdgeInsets.only(left: 15, right: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -264,9 +297,9 @@ class HomeScreen extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(3, 3),
+                        spreadRadius: 3,
+                        blurRadius: 3,
+                        offset: Offset(0.1, 0.1),
                       ),
                     ],
                     color: Color.fromRGBO(134, 150, 11, 1),
@@ -314,7 +347,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     context.push(AppRoutes.scholarship);
                   },
@@ -326,16 +359,17 @@ class HomeScreen extends StatelessWidget {
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(3, 3),
+                          spreadRadius: 3,
+                          blurRadius: 3,
+                          offset: Offset(0.1, 0.1),
                         ),
                       ],
                       color: Color.fromRGBO(0, 0, 0, 1),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15),
+                      padding: const EdgeInsets.only(left: 15, right: 8),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

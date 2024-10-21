@@ -2,18 +2,58 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ited_study/core/constants/boxsize.dart';
 import 'package:ited_study/core/constants/text_style.dart.dart';
-
 import '../../../../core/route/route.dart';
+import '../../domain/model/courses.dart';
 import '../widgets/course_tile.dart';
 
-class CourseScreen extends StatelessWidget {
+class CourseScreen extends ConsumerStatefulWidget {
   const CourseScreen({super.key});
 
   @override
+  ConsumerState<CourseScreen> createState() => _CourseScreenState();
+}
+
+class _CourseScreenState extends ConsumerState<CourseScreen> {
+  List<Courses> courses = [];
+  @override
+  void initState() {
+    getCourses();
+    super.initState();
+  }
+
+  void getCourses() async {
+    final box = await Hive.openBox<Courses>('courses');
+    setState(() {
+      courses = box.values.toList();
+    });
+  }
+
+  // late Future<List<Courses>> _futureCourses;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _futureCourses = _getCourses();
+  // }
+
+  // Future<List<Courses>> _getCourses() async {
+  //   await ref.read(courseNotifierProvider.notifier).getCourses();
+  //   return _getCoursesFromHive();
+  // }
+
+  // Future<List<Courses>> _getCoursesFromHive() async {
+  //   final box = await Hive.openBox<Courses>('courses');
+  //   return box.values.toList();
+  // }
+
+  @override
   Widget build(BuildContext context) {
+    print(courses.length);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

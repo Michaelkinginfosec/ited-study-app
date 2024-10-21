@@ -5,7 +5,7 @@ class LoginUsecase {
 
   LoginUsecase(this.usersRepository);
 
-  Future<String> call(String email, String password) async {
+  Future<String> login(String email, String password) async {
     return await usersRepository.login(email, password);
   }
 }

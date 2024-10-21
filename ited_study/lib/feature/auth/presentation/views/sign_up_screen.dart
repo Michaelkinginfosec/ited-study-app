@@ -1,8 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ited_study/core/constants/text_style.dart.dart';
 import 'package:ited_study/core/widgets/custom_app_bar.dart';
 import 'package:ited_study/feature/auth/data/models/users.dart';
@@ -13,7 +15,11 @@ import '../../../../core/route/route.dart';
 import '../providers/sign_up_provider.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
-  const SignUpScreen({super.key});
+  final String school;
+  const SignUpScreen({
+    super.key,
+    required this.school,
+  });
 
   @override
   SignUpScreenState createState() => SignUpScreenState();
@@ -193,6 +199,8 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                               onPressed: () {
                                 if (_formKey.currentState?.validate() ??
                                     false) {
+                                  var box = Hive.box('school');
+                                  final schoolId = box.get('schoolId');
                                   final user = Users(
                                     verified: false,
                                     fullName: _fullNameController.text,
@@ -200,6 +208,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                                     department: _departmentController.text,
                                     level: _levelController.text,
                                     password: _passwordController.text,
+                                    schoolId: schoolId,
                                   );
                                   ref
                                       .read(signUpNotifierProvider.notifier)
@@ -225,7 +234,7 @@ class SignUpScreenState extends ConsumerState<SignUpScreen> {
                   style: CustomTextStyles.firsttinyBody,
                 ),
                 CustomSizeBox.tinyBox,
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     context.push(AppRoutes.login);
                   },
